@@ -53,24 +53,24 @@
        └── ...
    ```
 
-#### 步骤 3: 修改模型路径
+#### 步骤 3: 修改模型路径（可选）
 
-打开 `web/app.js`，找到第 12 行：
+代码已经支持通过 URL 参数指定模型，**不需要修改代码**。
 
-```javascript
-modelPath: '../models/芊芊/芊芊.model3.json',
-```
-
-修改为你的模型路径：
-
-```javascript
-modelPath: '../models/Hiyori/Hiyori.model3.json',
-```
-
-或者，**不修改代码**，直接在 URL 中指定：
+**推荐方法（不修改代码）**：在 URL 中指定模型路径
 
 ```
 http://localhost:8080?model=../models/Hiyori/Hiyori.model3.json
+```
+
+**或者**，如果你想设置默认模型，可以修改 `web/app.js` 第 14 行的默认值：
+
+```javascript
+// 找到这一行（约第 14 行）：
+modelPath: urlParams.get('model') || '../models/芊芊/芊芊.model3.json',
+
+// 修改默认路径为你的模型：
+modelPath: urlParams.get('model') || '../models/Hiyori/Hiyori.model3.json',
 ```
 
 #### 步骤 4: 刷新网页

@@ -7,11 +7,14 @@
 // 暴露 PIXI 给插件
 window.PIXI = PIXI;
 
+// 从 URL 获取参数
+const urlParams = new URLSearchParams(window.location.search);
+
 // 配置
 const CONFIG = {
     // 从 URL 参数获取模型路径，或使用默认路径
     // 使用方式: ?model=./models/your-model/your-model.model3.json
-    modelPath: new URLSearchParams(window.location.search).get('model') || '../models/芊芊/芊芊.model3.json',
+    modelPath: urlParams.get('model') || '../models/芊芊/芊芊.model3.json',
     canvasId: 'canvas',
     backgroundColor: 0x000000,  // 黑色背景 (OBS 可抠)
     backgroundAlpha: 0,         // 透明背景
@@ -389,7 +392,7 @@ window.addEventListener('load', () => {
         console.info('    → 在控制台运行: window.testLipSync()');
         console.info('');
         console.info('  选项 3: 使用自定义模型');
-        console.info('    → 在 URL 添加: ?model=../models/YourModel/model.model3.json');
+        console.info('    → 在 URL 添加: ?model=../models/YourModel/YourModel.model3.json');
         console.info('');
         console.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.info('📚 详细文档: web/README.md 或 docs/LIP_SYNC_GUIDE.md');
