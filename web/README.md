@@ -102,16 +102,24 @@ web/
 
 ### Q: 口型抖动严重？
 
-调整平滑系数（在 `app.js` 中）：
+调整平滑系数（在 `app.js` 中找到 `mouthSmoothFactor` 变量）：
 
 ```javascript
+// 找到这一行：
+let mouthSmoothFactor = 0.3;
+
+// 修改值来调整平滑度：
 let mouthSmoothFactor = 0.5;  // 增大值（0-1）使口型更平滑
 ```
 
 ### Q: 口型张得不够大？
 
-调整音量映射范围（在 `app.js` 中）：
+调整音量映射范围（在 `app.js` 中修改 `handleAudioTrack` 函数内的音量计算部分）：
 
 ```javascript
-const targetValue = Math.min(average / 80, 1.0);  // 减小除数（原为 100）
+// 找到这一行：
+const targetValue = Math.min(average / 100, 1.0);
+
+// 修改除数来调整灵敏度：
+const targetValue = Math.min(average / 80, 1.0);  // 减小除数使口型更夸张
 ```
