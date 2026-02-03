@@ -44,3 +44,24 @@ python main.py dev
 - [ ] 接入 Bilibili 弹幕
 - [ ] RTMP 推流
 - [ ] Live2D 模型集成
+
+---
+
+## 2026-02-04 02:10 - STT 集成 (Deepgram)
+
+### 完成内容
+
+✅ **语音识别 (STT) 集成**
+- 集成 Deepgram `nova-3` 模型
+- 使用 `language="multi"` 自动检测语言
+- 语音 + 文字双输入模式
+
+### 已知问题
+
+⚠️ **中文识别效果不佳**
+- Deepgram 对中文识别准确率较低
+- 待优化: 考虑 OpenAI Whisper 或 阿里 FunASR
+
+### 技术栈更新
+
+- **STT**: Deepgram `nova-3` (multi-language)

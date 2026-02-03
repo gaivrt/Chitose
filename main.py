@@ -18,7 +18,7 @@ from livekit.agents import (
     WorkerOptions,
     cli,
 )
-from livekit.plugins import openai, elevenlabs, silero
+from livekit.plugins import openai, elevenlabs, silero, deepgram
 
 # 加载 .env
 load_dotenv()
@@ -65,6 +65,7 @@ async def entrypoint(ctx: JobContext):
     
     # 创建 session
     session = AgentSession(
+        stt=deepgram.STT(language="multi"),  # 语音识别 (自动检测语言)
         vad=silero.VAD.load(),
         llm=openai.LLM(**llm_kwargs),
         tts=elevenlabs.TTS(
@@ -80,7 +81,7 @@ async def entrypoint(ctx: JobContext):
         agent=ChitoseAgent(config),
         room=ctx.room,
         room_options=room_io.RoomOptions(
-            audio_input=False,   # 暂时禁用语音输入 (不用 STT)
+            audio_input=True,    # 启用语音输入 (Deepgram STT)
             audio_output=True,   # 启用语音输出 (TTS)
             text_input=True,     # 启用文字输入
             text_output=True,    # 启用文字输出
