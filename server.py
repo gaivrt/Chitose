@@ -70,8 +70,7 @@ class ChitoseRequestHandler(SimpleHTTPRequestHandler):
                 content_type = "application/json"
             elif file_path.suffix == ".png":
                 content_type = "image/png"
-            elif file_path.suffix == ".moc3":
-                content_type = "application/octet-stream"
+            # .moc3 文件使用默认的 octet-stream
             
             # 读取并发送文件
             with open(file_path, "rb") as f:
@@ -85,8 +84,8 @@ class ChitoseRequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(content)
             
         except Exception as e:
-            print(f"❌ Error serving model file: {e}")
-            self.send_error(500, f"Internal server error: {e}")
+            print(f"❌ Error serving model file {parsed_path.path}: {e}")
+            self.send_error(500, "Internal server error")
     
     def handle_token_request(self, parsed_path):
         """生成 LiveKit 访问 token"""
