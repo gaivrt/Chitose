@@ -24,6 +24,8 @@ PORT = int(os.getenv("WEB_SERVER_PORT", "8080"))
 
 # Web 文件目录
 WEB_DIR = Path(__file__).parent / "web"
+# 项目根目录 (用于访问 models 等资源)
+ROOT_DIR = Path(__file__).parent
 
 
 class ChitoseRequestHandler(SimpleHTTPRequestHandler):
@@ -39,9 +41,52 @@ class ChitoseRequestHandler(SimpleHTTPRequestHandler):
         # Token 生成 API
         if parsed_path.path == "/api/token":
             self.handle_token_request(parsed_path)
+        # 处理 models 目录的请求
+        elif parsed_path.path.startswith("/models/"):
+            self.serve_model_file(parsed_path)
         else:
             # 静态文件服务
             super().do_GET()
+    
+    def serve_model_file(self, parsed_path):
+        """服务 models 目录下的文件"""
+        try:
+            # 移除 /models/ 前缀并构建完整路径
+            relative_path = parsed_path.path[1:]  # 移除开头的 /
+            file_path = ROOT_DIR / relative_path
+            
+            # 安全检查：确保路径在 models 目录内
+            if not str(file_path.resolve()).startswith(str((ROOT_DIR / "models").resolve())):
+                self.send_error(403, "Forbidden")
+                return
+            
+            if not file_path.exists():
+                self.send_error(404, "File not found")
+                return
+            
+            # 根据文件扩展名确定 Content-Type
+            content_type = "application/octet-stream"
+            if file_path.suffix == ".json":
+                content_type = "application/json"
+            elif file_path.suffix == ".png":
+                content_type = "image/png"
+            elif file_path.suffix == ".moc3":
+                content_type = "application/octet-stream"
+            
+            # 读取并发送文件
+            with open(file_path, "rb") as f:
+                content = f.read()
+            
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", len(content))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(content)
+            
+        except Exception as e:
+            print(f"❌ Error serving model file: {e}")
+            self.send_error(500, f"Internal server error: {e}")
     
     def handle_token_request(self, parsed_path):
         """生成 LiveKit 访问 token"""

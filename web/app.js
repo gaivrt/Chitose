@@ -9,7 +9,7 @@ window.PIXI = PIXI;
 
 // 配置
 const CONFIG = {
-    modelPath: '../models/芊芊/芊芊.model3.json',
+    modelPath: '/models/芊芊/芊芊.model3.json',  // 使用绝对路径从网站根目录访问
     canvasId: 'canvas',
     backgroundColor: 0x000000,  // 黑色背景 (OBS 可抠)
     backgroundAlpha: 0,         // 透明背景
@@ -218,7 +218,7 @@ async function connectToLiveKit() {
         console.log('✅ Token 获取成功:', { url });
         
         // 创建 LiveKit Room
-        const { Room, RoomEvent } = LivekitClient;
+        const { Room, RoomEvent } = LiveKit;
         livekitState.room = new Room({
             adaptiveStream: true,
             dynacast: true,

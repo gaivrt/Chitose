@@ -53,7 +53,7 @@ models/
 
 ```javascript
 const CONFIG = {
-    modelPath: '../models/你的模型名/模型.model3.json',
+    modelPath: '/models/你的模型名/模型.model3.json',  // 使用绝对路径
     // ...
 };
 ```

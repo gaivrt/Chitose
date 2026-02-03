@@ -159,7 +159,7 @@ INFO:chitose:Chitose agent is now active!
 
 ```javascript
 const CONFIG = {
-    modelPath: '../models/你的模型/模型.model3.json',
+    modelPath: '/models/你的模型/模型.model3.json',  // 使用绝对路径
     
     // LiveKit 配置
     livekitRoom: 'test-room',          // 房间名
@@ -172,6 +172,8 @@ const CONFIG = {
     // ...
 };
 ```
+
+**注意**: 模型路径使用绝对路径 `/models/...`，服务器会自动从项目根目录的 `models/` 文件夹提供文件。
 
 ### 修改 Agent 人设
 
