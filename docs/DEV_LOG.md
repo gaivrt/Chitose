@@ -40,10 +40,10 @@ python main.py dev
 
 ### 下一步
 
-- [ ] 添加 STT (语音识别)
-- [ ] 接入 Bilibili 弹幕
+- [x] 添加 STT (语音识别)
+- [x] 接入 Bilibili 弹幕
 - [ ] RTMP 推流
-- [ ] Live2D 模型集成
+- [x] Live2D 模型集成
 
 ---
 
@@ -92,4 +92,56 @@ python main.py dev
 ### 下一步
 
 - [ ] 接入 LiveKit 音频做口型同步
+
+---
+
+## 2026-02-04 04:00 - LiveKit 网页集成 + 自动口型同步
+
+### 完成内容
+
+✅ **Web 服务器 (`server.py`)**
+- 自动生成 LiveKit 访问 token
+- 服务 web 静态文件
+- API: `GET /api/token?room=<room>&name=<name>`
+
+✅ **LiveKit 客户端集成 (`web/app.js`)**
+- 使用 LiveKit Client SDK 2.5.11
+- 自动连接到 LiveKit 房间
+- 订阅 Agent 的音频流
+
+✅ **自动口型同步**
+- 使用 Web Audio API 分析音频
+- 实时计算音量
+- 自动映射到 Live2D 嘴巴参数
+
+### 工作流程
+
+```
+用户输入 → Agent (TTS) → LiveKit Room → Web 页面 → Live2D 口型
+```
+
+### 使用方式
+
+```bash
+# 终端 1: 启动 Web 服务器
+python server.py
+
+# 终端 2: 启动 Agent
+python main.py dev
+
+# 浏览器: 访问 http://localhost:8080
+```
+
+### 技术细节
+
+- **Token 生成**: 使用 `livekit.api.AccessToken`
+- **音频接收**: `Room.on(RoomEvent.TrackSubscribed)`
+- **音频分析**: `AnalyserNode.getByteFrequencyData()`
+- **口型映射**: 非线性映射 `pow(volume, 0.5) * 1.2`
+
+### 下一步
+
+- [ ] 优化口型同步算法 (添加平滑过渡)
+- [ ] 添加连接状态 UI 提示
+- [ ] 支持多个观众同时观看
 
