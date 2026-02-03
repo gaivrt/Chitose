@@ -14,6 +14,11 @@ const urlParams = new URLSearchParams(window.location.search);
 const CONFIG = {
     // 从 URL 参数获取模型路径，或使用默认路径
     // 使用方式: ?model=./models/your-model/your-model.model3.json
+    // 
+    // ⚠️ 注意：如果模型路径包含中文字符，可能会遇到 404 错误
+    // 这是因为不同系统的文件系统编码不同，建议：
+    // 1. 重命名模型文件夹为英文名称（推荐）
+    // 2. 或通过 URL 参数指定路径: ?model=../models/your-model/model.model3.json
     modelPath: urlParams.get('model') || '../models/芊芊/芊芊.model3.json',
     canvasId: 'canvas',
     backgroundColor: 0x000000,  // 黑色背景 (OBS 可抠)
@@ -133,11 +138,28 @@ let initialModelSize = null;
         console.error('1. 模型文件路径是否正确？当前路径:', CONFIG.modelPath);
         console.error('2. 模型文件是否存在于该路径？');
         console.error('3. 模型文件是否是有效的 Live2D Cubism 模型？');
+        console.error('4. 路径中是否包含中文字符？');
+        console.error('\n⚠️ 中文路径问题:');
+        console.error('如果模型路径包含中文（如 models/芊芊/），可能会遇到 URL 编码问题。');
+        console.error('服务器日志中可能显示: GET /models/%E8%8A%8A%E8%8A%8A/...model3.json 404');
+        console.error('\n✅ 解决方法:');
+        console.error('方法 1（推荐）: 重命名文件夹为英文');
+        console.error('  例如: models/芊芊/ → models/qianqian/');
+        console.error('  然后修改路径: ?model=../models/qianqian/qianqian.model3.json');
+        console.error('');
+        console.error('方法 2: 使用绝对路径（如果中文路径确实存在）');
+        console.error('  检查服务器运行目录，使用相对于 web/ 的正确路径');
+        console.error('  例如: python -m http.server 8080 运行在 web/ 目录');
+        console.error('  则 ../models/芊芊/ 应指向项目根目录的 models/芊芊/');
+        console.error('');
+        console.error('方法 3: 使用英文样例模型');
+        console.error('  从 https://www.live2d.com/en/download/sample-data/');
+        console.error('  下载 Hiyori 等英文名称的模型');
         console.error('\n💡 提示:');
         console.error('- 如果您还没有模型，需要从 Live2D 官网下载或购买模型');
         console.error('- 将模型放在 web 目录同级的 models 目录中');
-        console.error('- 或通过 URL 参数指定: ?model=./your-model/model.model3.json');
-        console.error('\n📚 详细说明请查看: web/README.md');
+        console.error('- 推荐使用英文路径以避免编码问题');
+        console.error('\n📚 详细说明请查看: web/README.md 或 docs/TROUBLESHOOTING.md');
     }
 })();
 

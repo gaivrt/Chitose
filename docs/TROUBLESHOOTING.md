@@ -79,6 +79,96 @@ modelPath: urlParams.get('model') || '../models/Hiyori/Hiyori.model3.json',
 
 ---
 
+## 问题 1.5: 中文路径导致的 404 错误
+
+### 症状
+
+你有 `models/芊芊/` 目录，但浏览器显示 404 错误：
+```
+GET /models/%E8%8A%8A%E8%8A%8A/%E8%8A%8A%E8%8A%8A.model3.json HTTP/1.1" 404
+```
+
+### 原因
+
+这是 **URL 编码问题**。浏览器会将中文字符转换为 URL 编码（%E8%8A%8A 等），但不同系统的文件系统对非 ASCII 字符的处理不同，可能导致：
+- Windows/Linux 文件系统编码不一致
+- Python HTTP 服务器的 URL 解码问题
+- 浏览器缓存问题
+
+### 解决方法
+
+#### 方法 1: 重命名为英文路径（推荐）
+
+这是最可靠的解决方案：
+
+```bash
+# 重命名文件夹
+cd ~/programs/python/Chitose
+mv models/芊芊 models/qianqian
+
+# 同时重命名模型文件（如果文件名也是中文）
+cd models/qianqian
+mv 芊芊.model3.json qianqian.model3.json
+# 可能还需要修改 .model3.json 文件内的引用路径
+```
+
+然后访问：
+```
+http://localhost:8080?model=../models/qianqian/qianqian.model3.json
+```
+
+#### 方法 2: 检查路径和编码
+
+如果坚持使用中文路径，需要确认：
+
+1. **确认目录结构**：
+   ```bash
+   cd ~/programs/python/Chitose
+   ls -la models/
+   ls -la models/芊芊/
+   ```
+
+2. **确认 HTTP 服务器位置**：
+   ```bash
+   # 必须在 web 目录启动服务器
+   cd ~/programs/python/Chitose/web
+   python -m http.server 8080
+   ```
+
+3. **检查文件编码**：
+   ```bash
+   # 查看实际文件名的字节表示
+   ls -lb models/芊芊/
+   ```
+
+4. **尝试使用 Node.js HTTP 服务器**（对 UTF-8 支持更好）：
+   ```bash
+   # 安装 http-server
+   npm install -g http-server
+   
+   # 启动服务器
+   cd ~/programs/python/Chitose/web
+   http-server -p 8080 --cors
+   ```
+
+#### 方法 3: 使用英文样例模型
+
+避免编码问题，直接使用英文名称的模型：
+
+1. 从 https://www.live2d.com/en/download/sample-data/ 下载 **Hiyori** 或 **Haru**
+2. 解压到 `models/Hiyori/` 或 `models/Haru/`
+3. 访问 `http://localhost:8080?model=../models/Hiyori/Hiyori.model3.json`
+
+### 验证
+
+如果成功，浏览器控制台应该显示：
+```
+📦 加载模型: ../models/qianqian/qianqian.model3.json
+✅ 模型加载成功!
+```
+
+---
+
 ## 问题 2: 不知道 Token 是什么
 
 ### Token 是什么？
@@ -195,8 +285,24 @@ http://localhost:8080?token=YOUR_TOKEN
 打开浏览器控制台（F12），查看错误信息：
 
 - **404 错误**: 模型文件路径不对，检查路径是否正确
+- **404 错误（中文路径）**: 如果路径包含中文字符（如 `/models/%E8%8A%8A/`），参考上文"问题 1.5: 中文路径导致的 404 错误"
 - **CORS 错误**: 需要通过 HTTP 服务器访问，不能直接打开 HTML 文件
 - **格式错误**: 确保是 Live2D Cubism 4 模型（.model3.json）
+
+### Q: 我有 models/芊芊 但还是 404，怎么办？
+
+这是中文路径编码问题。**推荐解决方法**：
+
+```bash
+# 重命名为英文路径
+mv models/芊芊 models/qianqian
+mv models/qianqian/芊芊.model3.json models/qianqian/qianqian.model3.json
+
+# 然后访问
+http://localhost:8080?model=../models/qianqian/qianqian.model3.json
+```
+
+详细说明见上文"问题 1.5"。
 
 ### Q: Token 过期了怎么办？
 
@@ -209,7 +315,7 @@ Token 有时效性（通常几小时），过期后重新生成一个即可。
 ### Q: 没有 Live2D 模型怎么办？
 
 必须要有模型才能显示。可以：
-1. 使用官方免费样例
+1. 使用官方免费样例（英文路径，无编码问题）
 2. 购买商用模型（https://nizima.com/）
 3. 学习 Live2D Cubism Editor 自己制作
 
