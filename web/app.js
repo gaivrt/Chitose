@@ -9,7 +9,9 @@ window.PIXI = PIXI;
 
 // 配置
 const CONFIG = {
-    modelPath: '../models/芊芊/芊芊.model3.json',
+    // 从 URL 参数获取模型路径，或使用默认路径
+    // 使用方式: ?model=./models/your-model/your-model.model3.json
+    modelPath: new URLSearchParams(window.location.search).get('model') || '../models/芊芊/芊芊.model3.json',
     canvasId: 'canvas',
     backgroundColor: 0x000000,  // 黑色背景 (OBS 可抠)
     backgroundAlpha: 0,         // 透明背景
@@ -124,6 +126,15 @@ let initialModelSize = null;
 
     } catch (error) {
         console.error('❌ 模型加载失败:', error);
+        console.error('\n📝 请检查以下内容:');
+        console.error('1. 模型文件路径是否正确？当前路径:', CONFIG.modelPath);
+        console.error('2. 模型文件是否存在于该路径？');
+        console.error('3. 模型文件是否是有效的 Live2D Cubism 模型？');
+        console.error('\n💡 提示:');
+        console.error('- 如果您还没有模型，需要从 Live2D 官网下载或购买模型');
+        console.error('- 将模型放在 web 目录同级的 models 目录中');
+        console.error('- 或通过 URL 参数指定: ?model=./your-model/model.model3.json');
+        console.error('\n📚 详细说明请查看: web/README.md');
     }
 })();
 
@@ -206,7 +217,28 @@ async function connectToLiveKit() {
 
         if (!token) {
             console.warn('⚠️ 未提供 LiveKit token，跳过连接');
-            console.info('💡 提示：在 URL 添加参数 ?token=YOUR_TOKEN');
+            console.info('\n💡 如何获取 LiveKit Token:');
+            console.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.info('');
+            console.info('方式 1: 使用 LiveKit Playground（推荐，最简单）');
+            console.info('  1. 启动 Agent: python main.py dev');
+            console.info('  2. 访问 https://agents-playground.livekit.io');
+            console.info('  3. 连接后会自动生成 token');
+            console.info('  4. 从浏览器地址栏复制 token 参数');
+            console.info('  5. 在本页面 URL 添加: ?token=YOUR_TOKEN');
+            console.info('');
+            console.info('方式 2: 使用 LiveKit CLI');
+            console.info('  livekit-cli token create \\');
+            console.info('    --api-key YOUR_API_KEY \\');
+            console.info('    --api-secret YOUR_API_SECRET \\');
+            console.info('    --room-name test-room \\');
+            console.info('    --identity web-client');
+            console.info('');
+            console.info('方式 3: 不需要 LiveKit（仅测试 Live2D）');
+            console.info('  在控制台运行: window.testLipSync()');
+            console.info('');
+            console.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.info('\n📚 详细说明: docs/LIP_SYNC_GUIDE.md');
             return;
         }
 
@@ -339,10 +371,29 @@ window.addEventListener('load', () => {
         console.log('🚀 自动连接 LiveKit...');
         connectToLiveKit();
     } else {
-        console.info('💡 提示：');
-        console.info('   1. 添加 ?token=YOUR_TOKEN 自动连接 LiveKit');
-        console.info('   2. 或在控制台运行 connectToLiveKit() 手动连接');
-        console.info('   3. 或运行 testLipSync() 测试口型动画');
+        console.info('\n🎭 Chitose Live2D 已启动');
+        console.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.info('');
+        console.info('📋 当前状态:');
+        console.info('  ✅ Live2D 模型渲染');
+        console.info('  ❌ LiveKit 音频连接（未配置）');
+        console.info('');
+        console.info('💡 下一步操作:');
+        console.info('');
+        console.info('  选项 1: 连接 LiveKit 实现口型同步');
+        console.info('    → 需要先启动 Agent: python main.py dev');
+        console.info('    → 然后在 URL 添加: ?token=YOUR_TOKEN');
+        console.info('    → Token 获取方法见下文');
+        console.info('');
+        console.info('  选项 2: 测试口型动画（不需要 LiveKit）');
+        console.info('    → 在控制台运行: window.testLipSync()');
+        console.info('');
+        console.info('  选项 3: 使用自定义模型');
+        console.info('    → 在 URL 添加: ?model=../models/YourModel/model.model3.json');
+        console.info('');
+        console.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.info('📚 详细文档: web/README.md 或 docs/LIP_SYNC_GUIDE.md');
+        console.info('');
     }
 });
 
