@@ -126,29 +126,85 @@ ELEVENLABS_API_KEY=your-elevenlabs-key
 
 ---
 
-## 五、后续扩展路线
+## 五、直播工作流架构
+
+### 5.1 完整工作流
+
+```mermaid
+flowchart TB
+    subgraph Agent["Agent (Python)"]
+        LLM["LLM 对话"]
+        TTS["TTS 语音合成"]
+        STT["STT 语音识别"]
+    end
+
+    subgraph Web["网页 (Live2D)"]
+        L2D["pixi-live2d-display"]
+        LipSync["口型同步"]
+        Audio["音频播放"]
+    end
+
+    subgraph Shoost["Shoost"]
+        BG["背景/滤镜"]
+    end
+
+    subgraph OBS["OBS"]
+        Video["视频源 (Spout2)"]
+        AudioIn["音频源 (系统音频)"]
+    end
+
+    Agent -->|LiveKit 音频流| Web
+    L2D -->|Spout2 画面| Shoost
+    Audio -->|系统音频| AudioIn
+    Shoost -->|Spout2| Video
+    OBS --> Bilibili["B站直播姬"]
+```
+
+### 5.2 画面流 vs 音频流
+
+| 类型 | 路径 |
+|------|------|
+| **画面流** | 网页 (Live2D) → Spout2 → Shoost → Spout2 → OBS |
+| **音频流** | Agent (TTS) → LiveKit → 网页播放 → 系统音频 → OBS |
+
+> **说明**: 网页同时负责 Live2D 渲染和音频播放，音频用于口型同步并输出到系统音频供 OBS 采集。
+
+### 5.3 技术选型
+
+| 模块 | 选择 | 备注 |
+|------|------|------|
+| **Live2D 渲染** | pixi-live2d-display | PixiJS + Cubism 4 |
+| **画面共享** | Spout2 | 零延迟 GPU 共享 |
+| **音频传输** | LiveKit Client SDK | 网页接收音频 |
+| **直播间合成** | Shoost | 背景/滤镜管理 |
+| **推流** | OBS + B站直播姬 | |
+
+---
+
+## 六、后续扩展路线
 
 ```
-MVP (当前)
-  │
-  ├─► Phase 1: B站弹幕输入
-  │     └── 添加 blivedm 桥接
-  │
-  ├─► Phase 2: Live2D 形象
-  │     └── pixi-live2d-display + 浏览器渲染
-  │
-  ├─► Phase 3: RTMP 推流
-  │     └── FFmpeg + 无头浏览器
-  │
-  └─► Phase 4: 多实例部署
-        └── 配置管理 + 容器化
+MVP (当前) ✅ LLM + TTS + STT 管道
+   │
+   ├─► Phase 1: Live2D 皮套
+   │     └── pixi-live2d-display + Spout2
+   │
+   ├─► Phase 2: B站弹幕输入
+   │     └── blivedm 桥接
+   │
+   └─► Phase 3: 自动化
+         └── 定时任务 / 弹幕触发
 ```
 
 ---
 
-## 六、参考资料
+## 七、参考资料
 
 - [LiveKit Agents 官方文档](https://docs.livekit.io/agents/)
 - [LiveKit Python SDK](https://github.com/livekit/python-sdk)
 - [ElevenLabs API](https://elevenlabs.io/docs)
+- [Deepgram API](https://developers.deepgram.com/)
+- [pixi-live2d-display](https://github.com/guansss/pixi-live2d-display)
+- [Spout2](https://spout.zeal.co/)
 - [blivedm - B站直播弹幕库](https://github.com/xfgryujk/blivedm)
+
