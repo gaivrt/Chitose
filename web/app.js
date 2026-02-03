@@ -35,6 +35,7 @@ const CONFIG = {
 // 全局变量
 let app = null;
 let initialModelSize = null;
+let currentMouthValue = 0;  // 当前嘴巴张开值
 
 // 主程序
 (async function main() {
@@ -126,6 +127,32 @@ let initialModelSize = null;
         // 保存全局引用
         window.model = model;
 
+        // 打印模型参数信息用于调试
+        const coreModel = model.internalModel.coreModel;
+        console.log('🔍 嘴巴相关参数:', coreModel._parameterIds?.filter(id => id.toLowerCase().includes('mouth')));
+
+        // 测试设置参数
+        const mouthIndex = coreModel.getParameterIndex('ParamMouthOpenY');
+        console.log('🔍 ParamMouthOpenY index:', mouthIndex);
+        if (mouthIndex >= 0) {
+            console.log('🔍 当前值:', coreModel.getParameterValueByIndex(mouthIndex));
+            console.log('🔍 范围:', coreModel.getParameterMinimumValue(mouthIndex), '~', coreModel.getParameterMaximumValue(mouthIndex));
+        }
+
+        // 持续更新嘴巴参数
+        let frameCount = 0;
+        function updateMouth() {
+            if (window.model && currentMouthValue !== undefined) {
+                window.model.internalModel.coreModel.setParameterValueByIndex(mouthIndex, currentMouthValue);
+                // 每100帧打印一次
+                if (frameCount++ % 100 === 0) {
+                    console.log('🔄 更新嘴巴:', currentMouthValue);
+                }
+            }
+            requestAnimationFrame(updateMouth);
+        }
+        updateMouth();
+
         console.log('✅ 模型加载成功!');
         console.log('📊 模型信息:', {
             width: model.width,
@@ -180,14 +207,8 @@ function onResize() {
  * @param {number} value - 0~1
  */
 function setMouthOpenY(value) {
-    if (window.model && window.model.internalModel) {
-        const coreModel = window.model.internalModel.coreModel;
-        // Cubism 4 参数名通常是 ParamMouthOpenY
-        const paramIndex = coreModel.getParameterIndex('ParamMouthOpenY');
-        if (paramIndex >= 0) {
-            coreModel.setParameterValueByIndex(paramIndex, value);
-        }
-    }
+    currentMouthValue = value;
+    console.log('👄 设置嘴巴值:', currentMouthValue);
 }
 
 // 导出口型同步函数
@@ -200,6 +221,7 @@ window.setMouthOpenY = setMouthOpenY;
 let audioContext = null;
 let analyser = null;
 let lipSyncActive = false;
+let currentAudioElement = null;  // 跟踪当前音频元素
 
 /**
  * 连接 LiveKit Room
@@ -265,6 +287,16 @@ async function connectLiveKit() {
 function setupAudioAnalyser(track) {
     console.log('🎤 设置音频分析器...');
 
+    // 清理之前的音频元素
+    if (currentAudioElement) {
+        currentAudioElement.pause();
+        currentAudioElement.remove();
+        currentAudioElement = null;
+    }
+
+    // 停止之前的口型同步
+    stopLipSync();
+
     // 创建 AudioContext 用于分析
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -280,24 +312,27 @@ function setupAudioAnalyser(track) {
     audioElement.volume = 1.0;
     audioElement.autoplay = true;
     document.body.appendChild(audioElement);
+    currentAudioElement = audioElement;
 
     // 尝试播放
     audioElement.play().catch(err => {
         console.warn('⚠️ 自动播放被阻止，等待用户交互:', err);
     });
 
-    // 从 audio element 创建音频源
+    // 使用 MediaStream 创建音频源（而不是 MediaElement）
     try {
-        const source = audioContext.createMediaElementSource(audioElement);
+        const mediaStream = new MediaStream([track.mediaStreamTrack]);
+        const source = audioContext.createMediaStreamSource(mediaStream);
 
         // 创建分析器
         analyser = audioContext.createAnalyser();
         analyser.fftSize = 256;
-        analyser.smoothingTimeConstant = 0.5;
+        analyser.smoothingTimeConstant = 0.6;  // 增加平滑度，降低频率
 
-        // 连接: source → analyser → destination
+        // 连接: source → analyser (不连接到 destination，因为 audioElement 已经在播放)
         source.connect(analyser);
-        analyser.connect(audioContext.destination);
+
+        console.log('✅ 音频分析器设置成功');
 
         // 启动口型同步
         startLipSync();
@@ -315,6 +350,7 @@ function startLipSync() {
     console.log('👄 口型同步启动');
 
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    let debugCount = 0;
 
     function update() {
         if (!lipSyncActive) return;
@@ -330,11 +366,21 @@ function startLipSync() {
         }
         const average = sum / voiceRange;
 
-        // 映射到 0~1 (调整灵敏度)
-        const mouthValue = Math.min(1, average / 128);
+        // 调试：每60帧打印一次
+        if (debugCount++ % 60 === 0) {
+            console.log('🎵 音频分析:', { average, dataArray: dataArray.slice(0, 10) });
+        }
 
-        // 更新口型
-        setMouthOpenY(mouthValue);
+        // 映射到 0~0.6 (限制最大幅度)
+        const mouthValue = Math.min(0.6, average / 128 * 0.6);
+
+        // 只有当音量大于阈值时才更新口型
+        if (mouthValue > 0.01) {
+            setMouthOpenY(mouthValue);
+        } else if (currentMouthValue > 0) {
+            // 平滑关闭嘴巴
+            setMouthOpenY(Math.max(0, currentMouthValue - 0.1));
+        }
 
         requestAnimationFrame(update);
     }
