@@ -14,6 +14,15 @@ const CONFIG = {
     backgroundColor: 0x000000,  // 黑色背景 (OBS 可抠)
     backgroundAlpha: 0,         // 透明背景
     modelScale: 0.14,            // 固定缩放比例
+    
+    // LiveKit 配置
+    livekitRoom: 'test-room',
+    livekitParticipant: 'web-viewer',
+    modelLoadDelay: 2000,        // 模型加载延迟 (ms)
+    
+    // 口型同步参数
+    mouthSensitivityExponent: 0.5,  // 音量敏感度指数 (越小越灵敏)
+    mouthAmplificationFactor: 1.2,  // 嘴巴张开放大倍数
 };
 
 // 全局变量
@@ -200,7 +209,7 @@ async function connectToLiveKit() {
         console.log('🔗 正在连接 LiveKit...');
         
         // 从服务器获取 token
-        const response = await fetch('/api/token?room=test-room&name=web-viewer');
+        const response = await fetch(`/api/token?room=${CONFIG.livekitRoom}&name=${CONFIG.livekitParticipant}`);
         if (!response.ok) {
             throw new Error(`Token request failed: ${response.status}`);
         }
@@ -324,7 +333,7 @@ function startLipSyncLoop() {
         // 将音量映射到嘴巴张开度 (0-1)
         // 使用非线性映射，让嘴巴动作更自然
         const volume = average / 255;
-        const mouthOpen = Math.pow(volume, 0.5) * 1.2; // 放大并开根号
+        const mouthOpen = Math.pow(volume, CONFIG.mouthSensitivityExponent) * CONFIG.mouthAmplificationFactor;
         const clampedMouthOpen = Math.max(0, Math.min(1, mouthOpen));
         
         // 更新 Live2D 嘴巴
@@ -340,10 +349,10 @@ function startLipSyncLoop() {
 
 // 页面加载完成后自动连接 LiveKit
 window.addEventListener('load', () => {
-    // 延迟 2 秒等待模型加载完成
+    // 延迟等待模型加载完成
     setTimeout(() => {
         console.log('🎬 开始连接 LiveKit...');
         connectToLiveKit();
-    }, 2000);
+    }, CONFIG.modelLoadDelay);
 });
 

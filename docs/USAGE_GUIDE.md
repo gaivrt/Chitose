@@ -155,11 +155,20 @@ INFO:chitose:Chitose agent is now active!
 
 ### 修改模型路径
 
-编辑 `web/app.js`:
+编辑 `web/app.js` 中的 `CONFIG` 对象:
 
 ```javascript
 const CONFIG = {
     modelPath: '../models/你的模型/模型.model3.json',
+    
+    // LiveKit 配置
+    livekitRoom: 'test-room',          // 房间名
+    livekitParticipant: 'web-viewer',  // 参与者名称
+    
+    // 口型同步参数 (可以调整以获得更好的效果)
+    mouthSensitivityExponent: 0.5,     // 越小越灵敏 (0.3-0.7)
+    mouthAmplificationFactor: 1.2,     // 放大倍数 (0.8-1.5)
+    
     // ...
 };
 ```
@@ -221,13 +230,28 @@ agent:
 3. 确认看到 "🔊 开始播放音频并同步口型" 日志
 
 **优化**:
-编辑 `web/app.js` 中的映射参数：
+编辑 `web/app.js` 中的 `CONFIG` 对象：
 
 ```javascript
-// 调整这些参数以获得更好的效果
-const mouthOpen = Math.pow(volume, 0.5) * 1.2;
-//                          ^^^^ 指数   ^^^^ 放大倍数
+const CONFIG = {
+    // ...
+    
+    // 调整这些参数以获得更好的效果
+    mouthSensitivityExponent: 0.5,  // 默认 0.5，越小越灵敏 (范围: 0.3-0.7)
+    mouthAmplificationFactor: 1.2,  // 默认 1.2，放大倍数 (范围: 0.8-1.5)
+};
 ```
+
+**参数说明**:
+- `mouthSensitivityExponent`: 控制对音量变化的敏感度
+  - 0.3: 非常灵敏，小声音也会张嘴
+  - 0.5: 中等灵敏度（推荐）
+  - 0.7: 较不灵敏，需要较大音量才会张嘴
+  
+- `mouthAmplificationFactor`: 控制嘴巴张开的最大程度
+  - 0.8: 嘴巴张得较小
+  - 1.2: 中等程度（推荐）
+  - 1.5: 嘴巴张得很大
 
 ## 📊 系统架构
 

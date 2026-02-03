@@ -49,7 +49,7 @@ class ChitoseRequestHandler(SimpleHTTPRequestHandler):
             # 解析查询参数
             params = parse_qs(parsed_path.query)
             room_name = params.get("room", ["test-room"])[0]
-            participant_name = params.get("name", [f"user-{secrets.token_hex(4)}"])[0]
+            participant_name = params.get("name", [f"user-{secrets.token_hex(8)}"])[0]
             
             # 生成 token
             token = api.AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET)
