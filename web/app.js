@@ -177,3 +177,26 @@ function setMouthOpenY(value) {
 // 导出口型同步函数
 window.setMouthOpenY = setMouthOpenY;
 
+/**
+ * 显示 LiveKit 连接状态（调试用）
+ */
+function showLiveKitStatus() {
+    if (typeof window.getLiveKitStatus === 'function') {
+        const status = window.getLiveKitStatus();
+        console.log('📡 LiveKit 状态:', status);
+        return status;
+    }
+    return null;
+}
+
+// 每 5 秒显示一次状态
+setInterval(() => {
+    const status = showLiveKitStatus();
+    if (status && status.connected) {
+        // 在控制台显示音量（可选）
+        // console.log(`🔊 音量: ${status.smoothedVolume}`);
+    }
+}, 5000);
+
+// 暴露状态函数
+window.showLiveKitStatus = showLiveKitStatus;

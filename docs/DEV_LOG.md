@@ -93,3 +93,50 @@ python main.py dev
 
 - [ ] 接入 LiveKit 音频做口型同步
 
+---
+
+## 2026-02-03 20:10 - LiveKit 音频口型同步集成
+
+### 完成内容
+
+✅ **LiveKit 网页集成**
+- 在网页中集成 LiveKit Client SDK
+- 自动连接到 Agent 所在的 LiveKit 房间
+- 订阅 Agent 的 TTS 音频轨道
+
+✅ **音频分析与口型驱动**
+- 实时分析音频流的音量
+- 音量平滑处理，避免抖动
+- 根据音量自动调用 `setMouthOpenY()` API
+- 可配置的分析参数（平滑因子、阈值、缩放等）
+
+✅ **调试工具**
+- `showLiveKitStatus()` 查看连接状态
+- 控制台实时显示音量信息
+- 手动测试 API
+
+### 技术实现
+
+- **LiveKit SDK**: livekit-client 2.5.8
+- **音频分析**: Web Audio API (AnalyserNode)
+- **更新频率**: 50ms (20 FPS)
+- **平滑算法**: 指数移动平均 (EMA)
+
+### 使用方式
+
+```bash
+# 1. 启动 Agent
+python main.py dev
+
+# 2. 启动网页服务
+cd web && python -m http.server 8080
+
+# 3. 浏览器访问（带 LiveKit 参数）
+http://localhost:8080?livekit_url=wss://...&livekit_token=...
+```
+
+### 下一步
+
+- [ ] 优化音频分析算法（尝试音素检测）
+- [ ] 添加表情触发机制
+- [ ] 接入 Bilibili 弹幕
