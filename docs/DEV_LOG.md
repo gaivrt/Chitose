@@ -92,5 +92,4 @@ python main.py dev
 ### 下一步
 
 - [ ] 接入 LiveKit 音频做口型同步
-- [ ] Spout2 输出到 Shoost
 
