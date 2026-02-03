@@ -1,0 +1,35 @@
+[project]
+name = "chitose"
+version = "0.1.0"
+description = "AI VTuber system based on LiveKit Agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "GAIVR" }
+]
+
+dependencies = [
+    "livekit-agents>=1.0.0",
+    "livekit-plugins-openai>=1.0.0",
+    "livekit-plugins-elevenlabs>=1.0.0",
+    "livekit-plugins-silero>=1.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[project.scripts]
+chitose = "chitose.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["chitose"]
