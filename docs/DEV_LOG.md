@@ -65,3 +65,32 @@ python main.py dev
 ### 技术栈更新
 
 - **STT**: Deepgram `nova-3` (multi-language)
+
+---
+
+## 2026-02-04 03:25 - Live2D 网页展示
+
+### 完成内容
+
+✅ **Live2D 渲染**
+- 使用 `pixi-live2d-display` + PixiJS 7
+- 加载 Cubism 4 模型 (芊芊)
+- 透明背景，方便 OBS/Spout2 采集
+
+✅ **交互控制**
+- 空格 + 拖动：移动模型位置
+- Ctrl + 滚轮：缩放模型
+
+✅ **口型同步 API**
+- `window.setMouthOpenY(0~1)` 控制嘴巴开合
+
+### 技术栈
+
+- **渲染**: PixiJS 7.4.2 + pixi-live2d-display 0.4.0
+- **模型**: Cubism 4 SDK
+
+### 下一步
+
+- [ ] 接入 LiveKit 音频做口型同步
+- [ ] Spout2 输出到 Shoost
+
