@@ -70,8 +70,8 @@ async def entrypoint(ctx: JobContext):
         llm=openai.LLM(**llm_kwargs),
         tts=elevenlabs.TTS(
             voice_id=config.agent.tts_voice,
-            model="eleven_multilingual_v2",  # 多语言模型，支持中文
-            language="zh",
+            model=config.agent.tts_model,
+            language=config.agent.tts_language,
         ),
     )
     

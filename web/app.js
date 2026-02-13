@@ -372,7 +372,7 @@ function startLipSync() {
         }
 
         // 映射到 0~0.6 (限制最大幅度)
-        const mouthValue = Math.min(0.6, average / 128 * 0.6);
+        const mouthValue = Math.min(0.4, average / 128 * 0.4);
 
         // 只有当音量大于阈值时才更新口型
         if (mouthValue > 0.01) {

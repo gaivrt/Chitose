@@ -8,7 +8,7 @@ load_dotenv()
 
 async def test_elevenlabs_direct():
     api_key = os.getenv("ELEVEN_API_KEY")
-    voice_id = os.getenv("ELEVENLABS_VOICE_ID", "kGjJqO6wdwRN9iJsoeIC")
+    voice_id = os.getenv("ELEVENLABS_VOICE_ID", "yq5SDkHfQ3iLwJbEBLwv")
     
     print(f"API Key: {api_key[:10]}...{api_key[-5:]}")
     print(f"Voice ID: {voice_id}")
@@ -21,8 +21,8 @@ async def test_elevenlabs_direct():
     }
     
     data = {
-        "text": "Hello, this is a voice test.",
-        "model_id": "eleven_multilingual_v2",
+        "text": "[thoughtful] ……你突然让我说长长的话，是想听我的声音久一点吗？[chuckles] 明明平时都是你在讲，我在听……",
+        "model_id": "eleven_v3",
         "voice_settings": {
             "stability": 0.5,
             "similarity_boost": 0.5,

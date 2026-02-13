@@ -29,6 +29,7 @@ class AgentConfig:
     # TTS settings
     tts_voice: str = ""  # ElevenLabs voice ID
     tts_model: str = "eleven_turbo_v2_5"
+    tts_language: str = "zh"
     
     # Personality
     system_prompt: str = """你是 Chitose（千岁），一个 AI 虚拟主播。
@@ -94,6 +95,7 @@ class ChitoseConfig:
             config.agent.temperature = ag.get("temperature", config.agent.temperature)
             config.agent.tts_voice = ag.get("tts_voice", config.agent.tts_voice)
             config.agent.tts_model = ag.get("tts_model", config.agent.tts_model)
+            config.agent.tts_language = ag.get("tts_language", config.agent.tts_language)
             config.agent.system_prompt = ag.get("system_prompt", config.agent.system_prompt)
             config.agent.greeting = ag.get("greeting", config.agent.greeting)
         

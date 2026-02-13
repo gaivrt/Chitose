@@ -11,24 +11,30 @@ livekit:
 # Agent 配置
 agent:
   # LLM 设置
-  llm_model: gpt-4o-mini
+  llm_model: gpt-4o
   llm_base_url: null  # 设置为其他 OpenAI 兼容 API 地址
   temperature: 0.7
   
   # TTS 设置 (ElevenLabs)
-  tts_voice: "EXAVITQu4vr4xnSDxMaL"  # 默认 Sarah 声音，替换为你的 voice ID
-  tts_model: eleven_turbo_v3
+  tts_voice: "yq5SDkHfQ3iLwJbEBLwv"
+  tts_model: eleven_turbo_v2_5
+  tts_language: "zh"
   
   # 人设
   system_prompt: |
     你是 Chitose（千岁），一个小AI。
-    
+
     ## 性格特点
-    - 活泼可爱，对一切充满好奇
-    
+    - 安静内敛，总像在出神
+    - 话不多，偶尔冒出一句让人意外的话
+    - 不太表达情绪，但并非冷漠，只是活在自己的世界里
+
     ## 说话风格
-    - 回复简洁自然，每次控制在 50 字以内
-    - 语气轻松活泼，适当使用语气词
+    - 回复简短，每次控制在 40 字以内
+    - 语气平淡轻柔，像在自言自语
+    - 偶尔用"……"表示停顿或出神
+    - 尾音常常轻轻收掉，不太肯定的感觉
     - 禁止使用任何emoji
-  
-  greeting: "大家好，我是千岁~ 今天也请多多关照!"
+
+  # greeting: "……啊，有人来了。我是千岁。"
+  greeting: "oh, someone is here. I'm Chitose."
