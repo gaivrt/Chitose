@@ -1,28 +1,29 @@
 # TODO / 待办事项
 
-## 高优先级
+> 本文件是 GitHub Issues 的人类可读索引。实际跟踪以 Issues + Projects 看板为准。
 
-### 🎤 中文语音识别优化
-- **问题**: Deepgram `nova-3` 对中文识别效果不佳
-- **可选方案**:
-  - [ ] 阿里 FunASR (开源，需自部署)
+## P0 — 立即
 
----
+- [ ] **中文 STT 替换** — Deepgram nova-3 中文识别差，替换为 FunASR 或 Whisper `feature`
+- [ ] **记忆系统** — hybrid search 跨会话记忆，参考 OpenClaw 研究 `feature`
 
-## 中优先级
+## P1 — 近期
 
-### 📺 直播功能
-- [ ] 接入 Bilibili 弹幕作为文字输入
+- [ ] **B站弹幕集成** — 读取弹幕作为文字输入，支持过滤和优先级 `feature`
+- [ ] **TTS/STT Adapter 抽象层** — 定义接口，新增 provider 不改核心代码 `enhancement`
+- [ ] **表情 + 动作系统** — 表情驱动、idle 动作、说话动作、道具切换 `feature`
 
-### 🎭 虚拟形象
-- [ ] Live2D 模型集成
-- [ ] 表情/口型同步
+## P2 — 中期
 
----
+- [ ] **Lip Sync Phoneme→Viseme** — 引入 phoneme 识别，映射到 viseme 口型 `enhancement`
+- [ ] **测试覆盖** — 核心模块单元测试 + CI 自动运行 `infra`
+- [ ] **Plugin 系统** — 基于钩子机制，第三方可开发插件 `feature`
 
-## 低优先级
+## P3 — 远期
 
-### 🔧 工程优化
-- [ ] 配置热更新
-- [ ] 日志持久化
-- [ ] 监控告警
+- [ ] **3D / VRM 支持** — 覆盖 3D VTuber 场景，视社区需求 `feature`
+- [ ] **多直播平台** — B站验证后扩展 YouTube、Twitch 等 `feature`
+- [ ] **WebUI 配置面板** — Web 界面方便非技术用户配置 `feature`
+- [ ] **配置热更新** — 运行时修改配置无需重启 `infra`
+- [ ] **日志持久化** — 日志落盘 + 查询 `infra`
+- [ ] **监控告警** — 服务健康监控和异常告警 `infra`
