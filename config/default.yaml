@@ -36,14 +36,18 @@ agent:
     - 尾音常常轻轻收掉，不太肯定的感觉
     - 禁止使用任何emoji
 
-  # greeting: "……啊，有人来了。我是千岁。"
-  greeting: "oh, someone is here. I'm Chitose."
+  greeting: "……啊，有人来了。我是千岁。"
+  # greeting: "oh, someone is here. I'm Chitose."
 
 # 弹幕桥接配置
 danmaku:
-  enabled: false
+  enabled: true
   platform: bilibili
-  room_id: 0             # B站直播间号
+  room_id: 999      # B站直播间号
+  # B站登录 cookie，不设则看不到完整用户名（显示为 "栖***" 这样的脱敏格式）
+  # 获取方式：浏览器登录 bilibili.com → F12 → Application → Cookies → 复制 SESSDATA 的值
+  sessdata: ${BILI_SESSDATA}
   blocked_words: []
   max_length: 100
   dedup_window: 5         # 秒，同用户同内容去重窗口
+  sample_interval: 10     # 秒，普通弹幕采样间隔，0=不限制

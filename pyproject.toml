@@ -18,7 +18,6 @@ dependencies = [
     "livekit-api>=1.0.0",
     "pyyaml>=6.0",
     "python-dotenv>=1.0.0",
-    "blivedm>=2.0.0",
 ]
 
 [project.optional-dependencies]
@@ -29,6 +28,9 @@ dev = [
 
 [project.scripts]
 chitose = "chitose.main:main"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [build-system]
 requires = ["hatchling"]

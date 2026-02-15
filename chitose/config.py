@@ -45,9 +45,11 @@ class DanmakuConfig:
     enabled: bool = False
     platform: str = "bilibili"
     room_id: int = 0
+    sessdata: str | None = None
     blocked_words: list[str] = field(default_factory=list)
     max_length: int = 100
     dedup_window: float = 5.0
+    sample_interval: float = 10.0
 
 
 @dataclass
@@ -117,9 +119,11 @@ class ChitoseConfig:
             config.danmaku.enabled = dm.get("enabled", config.danmaku.enabled)
             config.danmaku.platform = dm.get("platform", config.danmaku.platform)
             config.danmaku.room_id = dm.get("room_id", config.danmaku.room_id)
+            config.danmaku.sessdata = dm.get("sessdata", config.danmaku.sessdata)
             config.danmaku.blocked_words = dm.get("blocked_words", config.danmaku.blocked_words)
             config.danmaku.max_length = dm.get("max_length", config.danmaku.max_length)
             config.danmaku.dedup_window = dm.get("dedup_window", config.danmaku.dedup_window)
+            config.danmaku.sample_interval = dm.get("sample_interval", config.danmaku.sample_interval)
 
         return config
     
@@ -147,5 +151,9 @@ class ChitoseConfig:
             config.agent.tts_voice = voice
         if tts_model := os.getenv("ELEVENLABS_MODEL"):
             config.agent.tts_model = tts_model
-        
+
+        # Bilibili
+        if sessdata := os.getenv("BILI_SESSDATA"):
+            config.danmaku.sessdata = sessdata
+
         return config
