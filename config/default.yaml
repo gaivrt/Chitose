@@ -38,3 +38,12 @@ agent:
 
   # greeting: "……啊，有人来了。我是千岁。"
   greeting: "oh, someone is here. I'm Chitose."
+
+# 弹幕桥接配置
+danmaku:
+  enabled: false
+  platform: bilibili
+  room_id: 0             # B站直播间号
+  blocked_words: []
+  max_length: 100
+  dedup_window: 5         # 秒，同用户同内容去重窗口

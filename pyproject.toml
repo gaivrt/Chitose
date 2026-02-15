@@ -14,8 +14,11 @@ dependencies = [
     "livekit-plugins-openai>=1.0.0",
     "livekit-plugins-elevenlabs>=1.0.0",
     "livekit-plugins-silero>=1.0.0",
+    "livekit-plugins-deepgram>=1.0.0",
+    "livekit-api>=1.0.0",
     "pyyaml>=6.0",
     "python-dotenv>=1.0.0",
+    "blivedm>=2.0.0",
 ]
 
 [project.optional-dependencies]

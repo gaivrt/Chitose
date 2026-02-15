@@ -88,6 +88,26 @@ async def entrypoint(ctx: JobContext):
         ),
     )
     
+    # 弹幕桥接
+    if config.danmaku.enabled and config.danmaku.room_id:
+        from chitose.danmaku import DanmakuBridge, DanmakuFilter
+
+        danmaku_filter = DanmakuFilter(
+            blocked_words=config.danmaku.blocked_words,
+            max_length=config.danmaku.max_length,
+            dedup_window=config.danmaku.dedup_window,
+        )
+        bridge = DanmakuBridge(
+            room_id=config.danmaku.room_id,
+            livekit_url=config.livekit.url,
+            livekit_api_key=config.livekit.api_key,
+            livekit_api_secret=config.livekit.api_secret,
+            livekit_room_name=ctx.room.name,
+            danmaku_filter=danmaku_filter,
+        )
+        await bridge.start()
+        logger.info("Danmaku bridge started for Bilibili room %d", config.danmaku.room_id)
+
     logger.info("Chitose agent is now active!")
 
 
