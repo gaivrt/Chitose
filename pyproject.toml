@@ -14,6 +14,8 @@ dependencies = [
     "livekit-plugins-openai>=1.0.0",
     "livekit-plugins-elevenlabs>=1.0.0",
     "livekit-plugins-silero>=1.0.0",
+    "livekit-plugins-deepgram>=1.0.0",
+    "livekit-api>=1.0.0",
     "pyyaml>=6.0",
     "python-dotenv>=1.0.0",
 ]
@@ -26,6 +28,9 @@ dev = [
 
 [project.scripts]
 chitose = "chitose.main:main"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [build-system]
 requires = ["hatchling"]
